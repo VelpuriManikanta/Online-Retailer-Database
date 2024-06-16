@@ -1,0 +1,50 @@
+a. Query to find the total number of orders placed by each customer:
+
+SELECT
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    COUNT(o.order_id) AS total_orders
+FROM
+    customers c
+LEFT JOIN
+    orders o ON c.customer_id = o.customer_id
+GROUP BY
+    c.customer_id, c.first_name, c.last_name
+ORDER BY
+    total_orders DESC;
+
+b. Query to list the products that have never been ordered:
+
+SELECT
+    p.product_id,
+    p.product_name
+FROM
+    products p
+LEFT JOIN
+    order_items oi ON p.product_id = oi.product_id
+WHERE
+    oi.order_item_id IS NULL;
+
+
+c. Query to find the customer who has spent the most money in the last month:
+Assume the current date is '2024-06-16'. We will find the customer who spent the most in the last month (from '2024-05-16' to '2024-06-16').
+
+SELECT
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    SUM(oi.price * oi.quantity) AS total_spent
+FROM
+    customers c
+JOIN
+    orders o ON c.customer_id = o.customer_id
+JOIN
+    order_items oi ON o.order_id = oi.order_id
+WHERE
+    o.order_date BETWEEN '2024-05-16' AND '2024-06-16'
+GROUP BY
+    c.customer_id, c.first_name, c.last_name
+ORDER BY
+    total_spent DESC
+LIMIT 1;
